@@ -56,7 +56,7 @@ public class AccountService {
     public void login(Account account) {
         //정석 아님 원래는 매니저통해서
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                account.getNickname(),
+                new UserAccount(account),
                 account.getPassword(),
                 List.of( new SimpleGrantedAuthority("ROLE_USER"))
         );
