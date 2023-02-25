@@ -17,19 +17,19 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class SettingsController {
 
-    private static final String SETTINGS_PROFILE_VIEW_NAME = "settings/profile";
-    private static final String SETTINGS_PROFILE_URL = "/settings/profile";
+    static final String SETTINGS_PROFILE_VIEW_NAME = "settings/profile";
+    static final String SETTINGS_PROFILE_URL = "/settings/profile";
 
     private final AccountService accountService;
 
-    @GetMapping("/settings/profile")
+    @GetMapping(SETTINGS_PROFILE_URL)
     public String profileUpdateForm(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(new Profile(account));
         return "settings/profile";
     }
 
-    @PostMapping("/settings/profile") //CurrentUser 얘는 영속상태가 아님
+    @PostMapping(SETTINGS_PROFILE_URL) //CurrentUser 얘는 영속상태가 아님
     public String updateProfile(@CurrentUser Account account, @Valid Profile profile, Errors errors,
                                 Model model, RedirectAttributes attributes) {
         if (errors.hasErrors()) {
