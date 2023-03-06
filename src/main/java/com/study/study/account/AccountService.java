@@ -1,8 +1,8 @@
 package com.study.study.account;
 
 import com.study.study.domain.Account;
-import com.study.study.settings.Notifications;
-import com.study.study.settings.Profile;
+import com.study.study.settings.form.Notifications;
+import com.study.study.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.mail.SimpleMailMessage;
