@@ -3,21 +3,19 @@ package com.study.study.settings;
 import com.study.study.account.AccountService;
 import com.study.study.account.CurrentUser;
 import com.study.study.domain.Account;
-import com.study.study.settings.form.NicknameForm;
-import com.study.study.settings.form.Notifications;
-import com.study.study.settings.form.PasswordForm;
-import com.study.study.settings.form.Profile;
+import com.study.study.domain.Tag;
+import com.study.study.settings.form.*;
 import com.study.study.settings.validator.NicknameValidator;
 import com.study.study.settings.validator.PasswordFormValidator;
+import com.study.study.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -40,6 +38,7 @@ public class SettingsController {
     private final AccountService accountService;
     private final ModelMapper modelMapper;
     private final NicknameValidator nicknameValidator;
+    private final TagRepository tagRepository;
 
     @InitBinder("passwordForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -136,5 +135,18 @@ public class SettingsController {
     public String updateTags(@CurrentUser Account account, Model model) {
         model.addAttribute(account);
         return SETTINGS_TAGS_VIEW_NAME;
+    }
+
+    @PostMapping("/settings/tags/add")
+    @ResponseBody
+    public ResponseEntity addTag(@CurrentUser Account account, @RequestBody TagForm tagForm) {
+        String title = tagForm.getTagTitle();
+        Tag tag = tagRepository.findByTitle(title)
+                .orElseGet(() -> tagRepository.save(Tag.builder()
+                .title(tagForm.getTagTitle())
+                .build()));
+
+        accountService.addTag(account, tag);
+        return ResponseEntity.ok().build();
     }
 }

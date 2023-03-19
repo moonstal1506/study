@@ -1,6 +1,7 @@
 package com.study.study.account;
 
 import com.study.study.domain.Account;
+import com.study.study.domain.Tag;
 import com.study.study.settings.form.Notifications;
 import com.study.study.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Transactional
@@ -110,5 +112,10 @@ public class AccountService implements UserDetailsService {
         account.setNickname(nickname);
         accountRepository.save(account);
         login(account);
+    }
+
+    public void addTag(Account account, Tag tag) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        byId.ifPresent(a -> a.getTags().add(tag));
     }
 }
