@@ -3,8 +3,8 @@ package com.study.study.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class Account {
 
     private String password;
 
-    private  boolean emailVerified;
+    private boolean emailVerified;
 
     private String emailCheckToken;
 
@@ -43,25 +43,26 @@ public class Account {
 
     private String location;
 
-    @Lob @Basic(fetch = FetchType.EAGER)
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
     private String profileImage;
 
     private boolean studyCreatedByEmail;
 
-    private boolean studyCreatedByWeb;
+    private boolean studyCreatedByWeb = true;
 
     private boolean studyEnrollmentResultByEmail;
 
-    private boolean studyEnrollmentResultByWeb;
+    private boolean studyEnrollmentResultByWeb = true;
 
     private boolean studyUpdatedByEmail;
 
-    private boolean studyUpdatedByWeb;
+    private boolean studyUpdatedByWeb = true;
 
     private LocalDateTime emailCheckTokenGeneratedAt;
 
     @ManyToMany
-    private Set<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
@@ -70,7 +71,7 @@ public class Account {
 
     public void completeSignUp() {
         this.emailVerified = true;
-        this.joinedAt= LocalDateTime.now();
+        this.joinedAt = LocalDateTime.now();
     }
 
     public boolean isValidToken(String token) {
