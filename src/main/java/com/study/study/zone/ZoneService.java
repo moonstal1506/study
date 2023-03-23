@@ -1,6 +1,6 @@
 package com.study.study.zone;
 
-import com.studyolle.domain.Zone;
+import com.study.study.domain.Zone;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -22,9 +22,9 @@ public class ZoneService {
     private final ZoneRepository zoneRepository;
 
     @PostConstruct
-    public void initZoneData() throws IOException{
-        if(zoneRepository.count()==0){
-            Resource resource = new ClassPathResource("zone_kr.csv");
+    public void initZoneData() throws IOException {
+        if (zoneRepository.count() == 0) {
+            Resource resource = new ClassPathResource("zones_kr.csv");
             List<Zone> zoneList = Files.readAllLines(resource.getFile().toPath(), StandardCharsets.UTF_8).stream()
                     .map(line -> {
                         String[] split = line.split(",");

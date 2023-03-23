@@ -2,6 +2,7 @@ package com.study.study.account;
 
 import com.study.study.domain.Account;
 import com.study.study.domain.Tag;
+import com.study.study.domain.Zone;
 import com.study.study.settings.form.Notifications;
 import com.study.study.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
@@ -121,5 +122,10 @@ public class AccountService implements UserDetailsService {
     public void removeTag(Account account, Tag tag) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         byId.ifPresent(a -> a.getTags().remove(tag));
+    }
+
+    public Set<Zone> getZones(Account account) {
+        Optional<Account> byId = accountRepository.findById(account.getId());
+        return byId.orElseThrow().getZones();
     }
 }

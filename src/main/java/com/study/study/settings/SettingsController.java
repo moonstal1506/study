@@ -6,10 +6,12 @@ import com.study.study.account.AccountService;
 import com.study.study.account.CurrentUser;
 import com.study.study.domain.Account;
 import com.study.study.domain.Tag;
+import com.study.study.domain.Zone;
 import com.study.study.settings.form.*;
 import com.study.study.settings.validator.NicknameValidator;
 import com.study.study.settings.validator.PasswordFormValidator;
 import com.study.study.tag.TagRepository;
+import com.study.study.zone.ZoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,7 @@ public class SettingsController {
     private final ModelMapper modelMapper;
     private final NicknameValidator nicknameValidator;
     private final TagRepository tagRepository;
+    private final ZoneRepository zoneRepository;
     private final ObjectMapper objectMapper;
 
     @InitBinder("passwordForm")
@@ -173,5 +176,18 @@ public class SettingsController {
 
         accountService.removeTag(account, tag);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/zones")
+    public String updateZonesForm(@CurrentUser Account account, Model model) throws JsonProcessingException {
+        model.addAttribute(account);
+
+        Set<Zone> zones = accountService.getZones(account);
+        model.addAttribute("zones", zones.stream().map(Zone::toString).collect(Collectors.toList()));
+
+        List<String> allZones = zoneRepository.findAll().stream().map(Zone::toString).collect(Collectors.toList());
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allZones));
+
+        return "settings/zones";
     }
 }
