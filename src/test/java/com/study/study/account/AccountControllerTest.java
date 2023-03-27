@@ -1,6 +1,8 @@
 package com.study.study.account;
 
 import com.study.study.domain.Account;
+import com.study.study.mail.EmailMessage;
+import com.study.study.mail.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AccountControllerTest {
 
     @MockBean
-    JavaMailSender javaMailSender;
+    EmailService emailService;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -109,6 +111,6 @@ class AccountControllerTest {
         assertNotEquals(account.getPassword(), "12345678");
         assertTrue(accountRepository.existsByEmail("email@email.com"));
         assertNotNull(account.getEmailCheckToken());
-        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+        then(emailService).should().sendEmail(any(EmailMessage.class));
     }
 }
