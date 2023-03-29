@@ -1,5 +1,6 @@
 package com.study.study.account;
 
+import com.study.study.config.AppProperties;
 import com.study.study.domain.Account;
 import com.study.study.domain.Tag;
 import com.study.study.domain.Zone;
@@ -20,6 +21,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +38,8 @@ public class AccountService implements UserDetailsService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final TemplateEngine templateEngine;
+    private final AppProperties appProperties;
 
     public Account processNewAccount(SignUpForm signUpForm) {
         Account newAccount = saveNewAccount(signUpForm);
@@ -51,11 +56,19 @@ public class AccountService implements UserDetailsService {
     }
 
     public void sendSignUpConfirmEmail(Account newAccount) {
+        Context context = new Context();
+        context.setVariable("link","/check-email-token?token=" + newAccount.getEmailCheckToken() +
+                "&email=" + newAccount.getEmail());
+        context.setVariable("nickname",newAccount.getNickname());
+        context.setVariable("linkName","이메일 인증하기");
+        context.setVariable("message","합격스터디 서비스를 사용하려면 링크를 클릭하세요.");
+        context.setVariable("host",appProperties.getHost());
+        String message = templateEngine.process("mail/simple-link", context);
+
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(newAccount.getEmail())
                 .subject("합격스터디, 회원 가입 인증")
-                .message("/check-email-token?token=" + newAccount.getEmailCheckToken() +
-                        "&email=" + newAccount.getEmail())
+                .message(message)
                 .build();
 
         emailService.sendEmail(emailMessage);
