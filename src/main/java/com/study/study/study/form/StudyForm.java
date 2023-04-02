@@ -15,6 +15,10 @@ public class StudyForm {
     private String path;
 
     @NotBlank
+    @Length(max = 50)
+    private String title;
+
+    @NotBlank
     @Length
     private String shortDescription;
 
