@@ -11,6 +11,7 @@ import com.study.study.settings.form.*;
 import com.study.study.settings.validator.NicknameValidator;
 import com.study.study.settings.validator.PasswordFormValidator;
 import com.study.study.tag.TagRepository;
+import com.study.study.tag.TagService;
 import com.study.study.zone.ZoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -45,6 +46,7 @@ public class SettingsController {
     static final String ZONES = "/zones";
 
     private final AccountService accountService;
+    private final TagService tagService;
     private final ModelMapper modelMapper;
     private final NicknameValidator nicknameValidator;
     private final TagRepository tagRepository;
@@ -137,12 +139,7 @@ public class SettingsController {
     @PostMapping(TAGS + "/add")
     @ResponseBody
     public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
-        String title = tagForm.getTagTitle();
-        Tag tag = tagRepository.findByTitle(title);
-        if (tag == null) {
-            tag = tagRepository.save(Tag.builder().title(title).build());
-        }
-
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
         accountService.addTag(account, tag);
         return ResponseEntity.ok().build();
     }
