@@ -5,7 +5,6 @@ import com.study.study.domain.Study;
 import com.study.study.domain.Tag;
 import com.study.study.domain.Zone;
 import com.study.study.study.form.StudyDescriptionForm;
-import com.study.study.study.form.StudyForm;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
@@ -145,6 +144,14 @@ public class StudyService {
         }else {
             throw new IllegalArgumentException("스터디를 삭제할 수 없습니다.");
         }
+    }
+
+    public void addMember(Study study, Account account) {
+        study.addMember(account);
+    }
+
+    public void removeMember(Study study, Account account) {
+        study.removeMember(account);
     }
 }
 
