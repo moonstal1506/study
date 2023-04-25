@@ -1,10 +1,10 @@
 package com.study.study.modules.study;
 
-import com.study.study.modules.account.WithAccount;
-import com.study.study.modules.account.AccountRepository;
+import com.study.study.infra.MockMvcTest;
 import com.study.study.modules.account.Account;
-
-
+import com.study.study.modules.account.AccountFactory;
+import com.study.study.modules.account.AccountRepository;
+import com.study.study.modules.account.WithAccount;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,17 +21,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
-@RequiredArgsConstructor
-public
-class StudyControllerTest {
+@MockMvcTest
+public class StudyControllerTest {
 
-    @Autowired protected MockMvc mockMvc;
-    @Autowired protected StudyService studyService;
-    @Autowired protected StudyRepository studyRepository;
-    @Autowired protected AccountRepository accountRepository;
+    @Autowired
+    protected MockMvc mockMvc;
+    @Autowired
+    protected StudyService studyService;
+    @Autowired
+    protected StudyRepository studyRepository;
+    @Autowired
+    protected AccountRepository accountRepository;
+    @Autowired
+    AccountFactory accountFactory;
+    @Autowired
+    StudyFactory studyFactory;
 
     @AfterEach
     void afterEach() {
@@ -107,14 +111,13 @@ class StudyControllerTest {
                 .andExpect(model().attributeExists("study"));
     }
 
-
     @Test
     @WithAccount("msj")
     @DisplayName("스터디 가입")
     void joinStudy() throws Exception {
-        Account crystal = createAccount("crystal");
+        Account crystal = accountFactory.createAccount("crystal");
 
-        Study study = createStudy("test-study", crystal);
+        Study study = studyFactory.createStudy("test-study", crystal);
 
         mockMvc.perform(get("/study/" + study.getPath() + "/join"))
                 .andExpect(status().is3xxRedirection())
@@ -128,8 +131,8 @@ class StudyControllerTest {
     @WithAccount("msj")
     @DisplayName("스터디 탈퇴")
     void leaveStudy() throws Exception {
-        Account crystal = createAccount("crystal");
-        Study study = createStudy("test-study", crystal);
+        Account crystal = accountFactory.createAccount("crystal");
+        Study study = studyFactory.createStudy("test-study", crystal);
 
         Account msj = accountRepository.findByNickname("msj");
         studyService.addMember(study, msj);
@@ -139,21 +142,6 @@ class StudyControllerTest {
                 .andExpect(redirectedUrl("/study/" + study.getPath() + "/members"));
 
         assertFalse(study.getMembers().contains(msj));
-    }
-
-    protected Study createStudy(String path, Account manager) {
-        Study study = new Study();
-        study.setPath(path);
-        studyService.createNewStudy(study, manager);
-        return study;
-    }
-
-    protected Account createAccount(String nickname) {
-        Account crystal = new Account();
-        crystal.setNickname(nickname);
-        crystal.setEmail(nickname + "@email.com");
-        accountRepository.save(crystal);
-        return crystal;
     }
 
 }

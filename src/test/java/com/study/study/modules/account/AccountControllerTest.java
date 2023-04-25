@@ -1,5 +1,6 @@
 package com.study.study.modules.account;
 
+import com.study.study.infra.MockMvcTest;
 import com.study.study.infra.mail.EmailMessage;
 import com.study.study.infra.mail.EmailService;
 import com.study.study.modules.account.Account;
@@ -23,9 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Transactional
-@SpringBootTest
-@AutoConfigureMockMvc
+@MockMvcTest
 class AccountControllerTest {
 
     @MockBean
