@@ -1,6 +1,6 @@
 package com.study.study.modules.notification;
 
-import com.studyolle.modules.account.Account;
+import com.study.study.modules.account.Account;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
