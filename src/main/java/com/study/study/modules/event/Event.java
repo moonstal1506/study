@@ -51,7 +51,8 @@ public class Event {
     @Column
     private Integer limitOfEnrollments;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event" , cascade = CascadeType.ALL)
+    @OrderBy("enrolledAt")
     private List<Enrollment> enrollments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
