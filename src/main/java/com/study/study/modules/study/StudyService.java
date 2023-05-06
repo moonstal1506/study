@@ -4,14 +4,19 @@ import com.study.study.modules.account.Account;
 import com.study.study.modules.study.event.StudyCreatedEvent;
 import com.study.study.modules.study.event.StudyUpdateEvent;
 import com.study.study.modules.tag.Tag;
+import com.study.study.modules.tag.TagRepository;
 import com.study.study.modules.zone.Zone;
 import com.study.study.modules.study.form.StudyDescriptionForm;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Random;
 
 import static com.study.study.modules.study.form.StudyForm.*;
 
