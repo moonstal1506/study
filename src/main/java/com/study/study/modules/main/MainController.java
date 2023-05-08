@@ -22,10 +22,12 @@ public class MainController {
     private final StudyRepository studyRepository;
 
     @GetMapping("/")
-    public String home(@CurrentAccount Account account, Model model){
-        if(account!=null){
+    public String home(@CurrentAccount Account account, Model model) {
+        if (account != null) {
             model.addAttribute(account);
         }
+
+        model.addAttribute("studyList", studyRepository.findFirst9ByPublishedAndClosedOrderByPublishedDateTimeDesc(true, false));
         return "index";
     }
 
